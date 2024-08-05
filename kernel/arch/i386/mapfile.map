@@ -1,0 +1,63 @@
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+ROM              0x0000000000100000 0x0000000000001000 xrw
+RAM              0x0000000000101000 0x0000000000200000 xrw
+*default*        0x0000000000000000 0xffffffffffffffff
+
+Linker script and memory map
+
+                0x0000000000100000                . = 0x100000
+
+.text           0x0000000000100000       0x44
+                0x0000000000100000                __text_start = .
+ *(.multiboot)
+ .multiboot     0x0000000000100000        0xc boot.o
+ *(.text)
+ .text          0x000000000010000c       0x38 boot.o
+                0x000000000010000c                _start
+                0x0000000000100044                __text_end = .
+
+.rodata         0x0000000000101000        0x0
+                0x0000000000101000                __rodata_start = .
+ *(.rodata)
+                0x0000000000101000                __rodata_end = .
+
+.data           0x0000000000101000     0x1000 load address 0x0000000000100044
+                0x0000000000101000                __data_start = .
+ *(.data)
+ .data          0x0000000000101000     0x1000 boot.o
+                0x0000000000101000                initial_page_dir
+                0x0000000000102000                __data_end = .
+
+.bss            0x0000000000102000     0x4000
+                0x0000000000102000                __bss_start = .
+ *(COMMON)
+ *(.bss)
+ .bss           0x0000000000102000     0x4000 boot.o
+                0x0000000000106000                __bss_end = .
+                0x0000000000106000                __end = .
+LOAD boot.o
+OUTPUT(my_executable elf64-x86-64)
+
+.debug_line     0x0000000000000000       0x59
+ .debug_line    0x0000000000000000       0x59 boot.o
+
+.debug_line_str
+                0x0000000000000000       0x47
+ .debug_line_str
+                0x0000000000000000       0x47 boot.o
+
+.debug_info     0x0000000000000000       0x31
+ .debug_info    0x0000000000000000       0x31 boot.o
+
+.debug_abbrev   0x0000000000000000       0x28
+ .debug_abbrev  0x0000000000000000       0x28 boot.o
+
+.debug_aranges  0x0000000000000000       0x20
+ .debug_aranges
+                0x0000000000000000       0x20 boot.o
+
+.debug_str      0x0000000000000000       0x5a
+ .debug_str     0x0000000000000000       0x5a boot.o
